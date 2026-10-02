@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning Hub</title>
+<style>
+  :root{ --bg:#f4efe6; --surface:#fbf8f2; --text:#2b2622; --muted:#6b6259; --line:#e2d9ca; --accent:#2f7d78; --code:#efe8db; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--text); font-family:Georgia, serif; line-height:1.6; }
+  a{ color:var(--accent); }
+  .wrap{ display:grid; grid-template-columns:280px 1fr; min-height:100vh; }
+  nav{ position:sticky; top:0; align-self:start; height:100vh; overflow:auto; background:var(--surface); border-right:1px solid var(--line); padding:20px 16px; }
+  nav h1{ font-size:18px; margin:0 0 2px; }
+  nav .sub{ color:var(--muted); font-size:12px; margin:0 0 18px; }
+  nav ul{ list-style:none; margin:0; padding:0; }
+  nav > ul > li{ margin-bottom:12px; }
+  nav .nav-proj{ display:block; font-weight:800; text-decoration:none; padding:4px 0; }
+  nav ul ul{ margin:2px 0 0 10px; border-left:2px solid var(--line); padding-left:10px; }
+  nav ul ul a{ display:block; font-size:14px; color:var(--muted); text-decoration:none; padding:3px 0; }
+  nav ul ul a:hover{ color:var(--accent); }
+  main{ padding:32px 40px 120px; max-width:900px; }
+  .project{ margin-bottom:48px; }
+  .project > h2{ font-size:26px; border-bottom:3px solid var(--accent); padding-bottom:8px; margin:0 0 2px; }
+  .project .path{ color:var(--muted); font-size:12px; font-family:ui-monospace, Menlo, monospace; margin:0 0 20px; }
+  .doc{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin-bottom:18px; }
+  .doc > h3{ margin:0 0 10px; font-size:19px; }
+  .doc.coaching{ border-left:4px solid var(--accent); }
+  .badge{ font-size:11px; font-weight:700; color:var(--accent); border:1px solid var(--accent); border-radius:999px; padding:2px 8px; vertical-align:middle; }
+  .src{ color:var(--muted); font-size:12px; font-family:ui-monospace, Menlo, monospace; margin:-4px 0 12px; }
+  .rendered h1{ font-size:22px; } .rendered h2{ font-size:19px; margin-top:22px; } .rendered h3{ font-size:16px; }
+  .rendered code{ background:var(--code); padding:1px 5px; border-radius:5px; font-size:.9em; }
+  .rendered pre{ background:var(--code); padding:14px; border-radius:10px; overflow:auto; }
+  .rendered pre code{ background:none; padding:0; }
+  .rendered table{ border-collapse:collapse; width:100%; }
+  .rendered th,.rendered td{ border:1px solid var(--line); padding:7px 10px; text-align:left; }
+  .rendered blockquote{ border-left:3px solid var(--accent); margin:0; padding-left:14px; color:var(--muted); }
+  .mermaid{ background:var(--surface); text-align:center; margin:14px 0; }
+  .empty{ color:var(--muted); font-style:italic; }
+  @media (max-width:760px){ .wrap{ grid-template-columns:1fr; } nav{ position:static; height:auto; } main{ padding:20px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <h1>Learning Hub</h1>
+    <p class="sub">1 project · generated Oct 2, 2026, 3:54 PM · shareable (no coaching)</p>
+    <ul><li><a class="nav-proj" href="#proj-iris">Iris</a><ul><li><a href="#proj-iris-glossary">Glossary</a></li><li><a href="#proj-iris-questions">Questions</a></li></ul></li></ul>
+  </nav>
+  <main><div class="project" id="proj-iris"><h2>Iris</h2><p class="path">/Users/ajrogers/Projects/iris</p><section class="doc" id="proj-iris-glossary"><h3>Glossary</h3><div class="rendered" data-target="proj-iris-glossary"></div></section>
+<section class="doc" id="proj-iris-questions"><h3>Questions</h3><div class="rendered" data-target="proj-iris-questions"></div></section></div></main>
+</div>
+
+<script id="mermaidData" type="application/json">{}</script>
+<script type="text/markdown" data-target="proj-iris-glossary">
+# Glossary — concepts, in plain language
+
+Concepts that started as questions and got answered while building. Each links to the file or commit that taught it. Newest at top.
+
+---
+
+### `rem` + a root `--scale` variable = scale the whole UI with one knob
+`px` is an absolute size: 16px is always 16px. `rem` is *relative* to the root (`<html>`) font-size. So if every size in the CSS is written in `rem`, changing one thing — the root font-size — rescales the entire interface proportionally. We drive that root size from a single CSS variable: `html{ font-size: calc(16px * var(--scale)); }`. The text-size control just sets `--scale`, and headings, padding-in-rem, buttons, body text all grow together. If we had left sizes in `px`, the control could only resize the one element it was wired to.
+*Taught by:* the app-wide theming port — `reader-mock.html`, `writing-mock.html` (commit with `Learned:` on theming).
+
+### Fail-closed grounding (the anti-hallucination rule, made literal)
+The comprehension layer answers **only** from the loaded document. In code this is a lookup against the document's content; when there is no match, it does not improvise a plausible answer — it *refuses* and says the answer is not in the document. "Fail closed" means the safe default on uncertainty is to deny, not to guess. This is what makes the feature trustable and institution-approvable.
+*Taught by:* `listen-mock.html` — the `answerQuestion` / `QA` lookup with its no-match fallback.
+
+### CSS custom properties + `data-theme` = themeable surface
+Colors are declared once as variables on `:root` (e.g. `--bg`, `--text`). A theme is just a block like `body[data-theme="dark"]{ --bg:#14181b; ... }` that overrides those variables. Flip one attribute on `<body>` and every element that reads `var(--bg)` recolors at once. No per-element restyling. Meaning is never encoded by color alone, so a theme change never removes information.
+*Taught by:* every mock's `:root` + `body[data-theme=...]` blocks.
+
+</script>
+<script type="text/markdown" data-target="proj-iris-questions">
+# Open questions
+
+Dump curiosity here the moment it strikes. Half-formed is fine. When one is answered, move the concept to [GLOSSARY.md](GLOSSARY.md) and delete it from here (the commit history keeps it).
+
+Format: `- [ ] question — (optional: why I'm asking / where it came up)`
+
+## Architecture & languages
+- [ ] Why Next.js App Router route handlers for the API instead of a separate backend (Express, FastAPI)? What does a route handler actually *do* at runtime?
+- [ ] TypeScript vs plain JavaScript: what does the type layer buy us, and where is it worth the cost?
+- [ ] Where is each language/runtime efficient and why — JS for the UI, SQL for the data layer, what runs where when a user asks a question?
+
+## Data & privacy
+- [ ] How does Postgres row-level security actually enforce per-user isolation, and where can it leak? (see the carried write-policy-proving-lessons memory)
+- [ ] pgvector on Neon: walk the full grounding path — chunk the doc, embed, store, retrieve, answer only from retrieved chunks. What is an embedding, concretely?
+- [ ] How does the ZDR gateway *guarantee* zero retention, and what does "fail closed" mean at the API layer (what happens on the wire when no zero-retention provider serves the model)?
+
+## Reading & accessibility tech
+- [ ] Browser SpeechSynthesis `onboundary`: how precise is word-level highlight timing in practice, and what breaks it?
+- [ ] On-device STT (Vosk grammar): how does in-browser recognition work without the audio ever leaving the device? (see voice-on-device-stt-decision memory)
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad:false, theme:'neutral' });
+  const esc = (s)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const mmap = JSON.parse(document.getElementById('mermaidData').textContent || '{}');
+  document.querySelectorAll('script[type="text/markdown"]').forEach((s)=>{
+    let html = marked.parse(s.textContent.trim());
+    for (const [k, code] of Object.entries(mmap)) {
+      const pre = '<pre class="mermaid">' + esc(code) + '</pre>';
+      html = html.split('<p>@@'+k+'@@</p>').join(pre).split('@@'+k+'@@').join(pre);
+    }
+    const t = document.querySelector('[data-target="'+s.dataset.target+'"]');
+    if (t) t.innerHTML = html;
+  });
+  try { await mermaid.run({ querySelector: '.mermaid' }); } catch (e) { console.warn('mermaid', e); }
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# node
+node_modules/
+
+# locally generated hubs (may contain private coaching) — never commit
+/index.html
+/index-shareable.html
+
+# coaching reviews are a private, candid critique — never commit
+**/coaching/
+
+# os
+.DS_Store
+.gstack/
